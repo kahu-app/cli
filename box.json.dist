@@ -1,0 +1,23 @@
+{
+  "algorithm": "SHA256",
+  "compactors": [
+    "KevinGH\\Box\\Compactor\\Json"
+  ],
+  "compression": "GZ",
+  "directories": [
+    "src"
+  ],
+  "finder": [
+    {
+      "exclude": [
+        "test",
+        "tests"
+      ],
+      "in": "vendor",
+      "name": "*.php"
+    }
+  ],
+  "force-autodiscovery": true,
+  "main": "bin/console.php",
+  "output": "bin/kahu-app.phar"
+}

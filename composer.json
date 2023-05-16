@@ -1,0 +1,36 @@
+{
+  "name": "kahu-app/cli",
+  "description": "Kahu.app Command-line interface",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Flavio Heleno",
+      "email": "flaviohbatista@gmail.com",
+      "homepage": "https://flavioheleno.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Kahu\\Cli\\": "src/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true,
+    "preferred-install": "dist",
+    "allow-plugins": {
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": "^8.2",
+    "guzzlehttp/guzzle": "^7.6",
+    "laravel-zero/phar-updater": "^1.3",
+    "psr/http-client": "^1.0",
+    "psr/http-factory": "^1.0",
+    "psr/http-message": "^2.0",
+    "symfony/console": "^6.2"
+  }
+}
