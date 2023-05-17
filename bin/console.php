@@ -12,6 +12,7 @@ chdir(dirname($argv[0]));
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Composer\InstalledVersions;
+use Kahu\Cli\Commands\AuthCommand;
 use Kahu\Cli\Commands\CheckCommand;
 use Kahu\Cli\Commands\ShowCommand;
 use Kahu\Cli\Commands\UpdateCommand;
@@ -27,6 +28,21 @@ define(
   )
 );
 
+define(
+  'AUTH_FILE',
+  sprintf(
+    '%s/.config/kahu/auth.json',
+    $_SERVER['HOME'] ?? $_ENV['HOME'] ?? '~'
+  )
+);
+
+$accessToken = 'unauthenticated';
+if (file_exists(AUTH_FILE) === true) {
+  $json = json_decode(file_get_contents(AUTH_FILE), true, flags: JSON_THROW_ON_ERROR);
+
+  $accessToken = $json['access_token'] ?? 'unauthenticated';
+}
+
 $client = new GuzzleHttp\Client(
   [
     'base_uri' => 'https://api.kahu.app/v1',
@@ -39,7 +55,7 @@ $client = new GuzzleHttp\Client(
     ],
     'headers' => [
       'Accept' => 'application/json',
-      'Authorization' => 'Bearer X-AUTH-TOKEN',
+      'Authorization' => "Bearer {$accessToken}",
       'User-Agent' => sprintf(
         'kahu-cli/%s (php/%s; %s)',
         __VERSION__,
@@ -56,6 +72,9 @@ $app = new Application('kahu.app console', __VERSION__);
 $app->setCommandLoader(
   new FactoryCommandLoader(
     [
+      AuthCommand::getDefaultName() => static function (): AuthCommand {
+        return new AuthCommand();
+      },
       CheckCommand::getDefaultName() => static function () use ($client, $httpFactory): CheckCommand {
         return new CheckCommand($client, $httpFactory, $httpFactory);
       },
