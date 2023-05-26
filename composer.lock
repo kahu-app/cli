@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ad1b1029ec72ccca00c8a6278f5c49d9",
+    "content-hash": "aaa698f19e8b07d85a574698398c888e",
     "packages": [
         {
             "name": "amphp/amp",
@@ -1058,22 +1058,182 @@
             "time": "2022-09-20T18:15:38+00:00"
         },
         {
-            "name": "guzzlehttp/guzzle",
-            "version": "7.6.1",
+            "name": "dflydev/dot-access-data",
+            "version": "v3.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "8444a2bacf1960bc6a2b62ed86b8e72e11eebe51"
+                "url": "https://github.com/dflydev/dflydev-dot-access-data.git",
+                "reference": "f41715465d65213d644d3141a6a93081be5d3549"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/8444a2bacf1960bc6a2b62ed86b8e72e11eebe51",
-                "reference": "8444a2bacf1960bc6a2b62ed86b8e72e11eebe51",
+                "url": "https://api.github.com/repos/dflydev/dflydev-dot-access-data/zipball/f41715465d65213d644d3141a6a93081be5d3549",
+                "reference": "f41715465d65213d644d3141a6a93081be5d3549",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.12.42",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.3",
+                "scrutinizer/ocular": "1.6.0",
+                "squizlabs/php_codesniffer": "^3.5",
+                "vimeo/psalm": "^4.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dflydev\\DotAccessData\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dragonfly Development Inc.",
+                    "email": "info@dflydev.com",
+                    "homepage": "http://dflydev.com"
+                },
+                {
+                    "name": "Beau Simensen",
+                    "email": "beau@dflydev.com",
+                    "homepage": "http://beausimensen.com"
+                },
+                {
+                    "name": "Carlos Frutos",
+                    "email": "carlos@kiwing.it",
+                    "homepage": "https://github.com/cfrutos"
+                },
+                {
+                    "name": "Colin O'Dell",
+                    "email": "colinodell@gmail.com",
+                    "homepage": "https://www.colinodell.com"
+                }
+            ],
+            "description": "Given a deep data structure, access data by dot notation.",
+            "homepage": "https://github.com/dflydev/dflydev-dot-access-data",
+            "keywords": [
+                "access",
+                "data",
+                "dot",
+                "notation"
+            ],
+            "support": {
+                "issues": "https://github.com/dflydev/dflydev-dot-access-data/issues",
+                "source": "https://github.com/dflydev/dflydev-dot-access-data/tree/v3.0.2"
+            },
+            "time": "2022-10-27T11:44:00+00:00"
+        },
+        {
+            "name": "flavioheleno/jay",
+            "version": "0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/flavioheleno/jay.git",
+                "reference": "c6058ad5a54b7cda3f8c411322eec426e37403d8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/flavioheleno/jay/zipball/c6058ad5a54b7cda3f8c411322eec426e37403d8",
+                "reference": "c6058ad5a54b7cda3f8c411322eec426e37403d8",
+                "shasum": ""
+            },
+            "require": {
+                "flavioheleno/scale": "^0.2",
+                "php": "^8.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jay\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Flavio Heleno",
+                    "email": "flaviohbatista@gmail.com"
+                }
+            ],
+            "description": "Thin wrapper for json & simdjson",
+            "keywords": [
+                "json",
+                "simdjson"
+            ],
+            "support": {
+                "issues": "https://github.com/flavioheleno/jay/issues",
+                "source": "https://github.com/flavioheleno/jay/tree/0.3.0"
+            },
+            "time": "2023-03-09T14:51:36+00:00"
+        },
+        {
+            "name": "flavioheleno/scale",
+            "version": "0.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/flavioheleno/scale.git",
+                "reference": "bd68fd5e2ac595f0bc031162e73fcf9cecbc60c9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/flavioheleno/scale/zipball/bd68fd5e2ac595f0bc031162e73fcf9cecbc60c9",
+                "reference": "bd68fd5e2ac595f0bc031162e73fcf9cecbc60c9",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Scale\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Flavio Heleno",
+                    "email": "flaviohbatista@gmail.com"
+                }
+            ],
+            "description": "Typical scale conversion as Interfaces constants for PHP",
+            "support": {
+                "issues": "https://github.com/flavioheleno/scale/issues",
+                "source": "https://github.com/flavioheleno/scale/tree/0.2.2"
+            },
+            "time": "2023-03-07T15:37:41+00:00"
+        },
+        {
+            "name": "guzzlehttp/guzzle",
+            "version": "7.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/guzzle.git",
+                "reference": "fb7566caccf22d74d1ab270de3551f72a58399f5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/fb7566caccf22d74d1ab270de3551f72a58399f5",
+                "reference": "fb7566caccf22d74d1ab270de3551f72a58399f5",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "guzzlehttp/promises": "^1.5",
+                "guzzlehttp/promises": "^1.5.3 || ^2.0",
                 "guzzlehttp/psr7": "^1.9.1 || ^2.4.5",
                 "php": "^7.2.5 || ^8.0",
                 "psr/http-client": "^1.0",
@@ -1085,7 +1245,8 @@
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.1",
                 "ext-curl": "*",
-                "php-http/client-integration-tests": "^3.0",
+                "php-http/client-integration-tests": "dev-master#2c025848417c1135031fdf9c728ee53d0a7ceaee as 3.0.999",
+                "php-http/message-factory": "^1.1",
                 "phpunit/phpunit": "^8.5.29 || ^9.5.23",
                 "psr/log": "^1.1 || ^2.0 || ^3.0"
             },
@@ -1164,7 +1325,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.6.1"
+                "source": "https://github.com/guzzle/guzzle/tree/7.7.0"
             },
             "funding": [
                 {
@@ -1180,38 +1341,37 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-15T20:43:01+00:00"
+            "time": "2023-05-21T14:04:53+00:00"
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "1.5.2",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "b94b2807d85443f9719887892882d0329d1e2598"
+                "reference": "3a494dc7dc1d7d12e511890177ae2d0e6c107da6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/b94b2807d85443f9719887892882d0329d1e2598",
-                "reference": "b94b2807d85443f9719887892882d0329d1e2598",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/3a494dc7dc1d7d12e511890177ae2d0e6c107da6",
+                "reference": "3a494dc7dc1d7d12e511890177ae2d0e6c107da6",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5"
+                "php": "^7.2.5 || ^8.0"
             },
             "require-dev": {
-                "symfony/phpunit-bridge": "^4.4 || ^5.1"
+                "bamarni/composer-bin-plugin": "^1.8.1",
+                "phpunit/phpunit": "^8.5.29 || ^9.5.23"
             },
             "type": "library",
             "extra": {
-                "branch-alias": {
-                    "dev-master": "1.5-dev"
+                "bamarni-bin": {
+                    "bin-links": true,
+                    "forward-command": false
                 }
             },
             "autoload": {
-                "files": [
-                    "src/functions_include.php"
-                ],
                 "psr-4": {
                     "GuzzleHttp\\Promise\\": "src/"
                 }
@@ -1248,7 +1408,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/1.5.2"
+                "source": "https://github.com/guzzle/promises/tree/2.0.0"
             },
             "funding": [
                 {
@@ -1264,7 +1424,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-08-28T14:55:35+00:00"
+            "time": "2023-05-21T13:50:22+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -1383,12 +1543,12 @@
             "time": "2023-04-17T16:11:26+00:00"
         },
         {
-            "name": "kahu-app/oauth2-client",
+            "name": "kahu/oauth2-client",
             "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "../oauth2-client",
-                "reference": "6d09c1a5f992201d77f720a331bb417a2e0308bf"
+                "reference": "df923905f9d92970da5fd54109279e102460df52"
             },
             "require": {
                 "ext-json": "*",
@@ -1544,6 +1704,148 @@
                 "source": "https://github.com/laravel-zero/phar-updater/tree/v1.3.0"
             },
             "time": "2022-02-04T18:59:19+00:00"
+        },
+        {
+            "name": "laravel/serializable-closure",
+            "version": "v1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/serializable-closure.git",
+                "reference": "f23fe9d4e95255dacee1bf3525e0810d1a1b0f37"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/serializable-closure/zipball/f23fe9d4e95255dacee1bf3525e0810d1a1b0f37",
+                "reference": "f23fe9d4e95255dacee1bf3525e0810d1a1b0f37",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3|^8.0"
+            },
+            "require-dev": {
+                "nesbot/carbon": "^2.61",
+                "pestphp/pest": "^1.21.3",
+                "phpstan/phpstan": "^1.8.2",
+                "symfony/var-dumper": "^5.4.11"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\SerializableClosure\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                },
+                {
+                    "name": "Nuno Maduro",
+                    "email": "nuno@laravel.com"
+                }
+            ],
+            "description": "Laravel Serializable Closure provides an easy and secure way to serialize closures in PHP.",
+            "keywords": [
+                "closure",
+                "laravel",
+                "serializable"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/serializable-closure/issues",
+                "source": "https://github.com/laravel/serializable-closure"
+            },
+            "time": "2023-01-30T18:31:20+00:00"
+        },
+        {
+            "name": "league/config",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/config.git",
+                "reference": "754b3604fb2984c71f4af4a9cbe7b57f346ec1f3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/config/zipball/754b3604fb2984c71f4af4a9cbe7b57f346ec1f3",
+                "reference": "754b3604fb2984c71f4af4a9cbe7b57f346ec1f3",
+                "shasum": ""
+            },
+            "require": {
+                "dflydev/dot-access-data": "^3.0.1",
+                "nette/schema": "^1.2",
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.8.2",
+                "phpunit/phpunit": "^9.5.5",
+                "scrutinizer/ocular": "^1.8.1",
+                "unleashedtech/php-coding-standard": "^3.1",
+                "vimeo/psalm": "^4.7.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Config\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Colin O'Dell",
+                    "email": "colinodell@gmail.com",
+                    "homepage": "https://www.colinodell.com",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "Define configuration arrays with strict schemas and access values with dot notation",
+            "homepage": "https://config.thephpleague.com",
+            "keywords": [
+                "array",
+                "config",
+                "configuration",
+                "dot",
+                "dot-access",
+                "nested",
+                "schema"
+            ],
+            "support": {
+                "docs": "https://config.thephpleague.com/",
+                "issues": "https://github.com/thephpleague/config/issues",
+                "rss": "https://github.com/thephpleague/config/releases.atom",
+                "source": "https://github.com/thephpleague/config"
+            },
+            "funding": [
+                {
+                    "url": "https://www.colinodell.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.paypal.me/colinpodell/10.00",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/colinodell",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-12-11T20:36:23+00:00"
         },
         {
             "name": "league/oauth2-client",
@@ -1877,6 +2179,155 @@
             "time": "2021-06-28T04:27:21+00:00"
         },
         {
+            "name": "nette/schema",
+            "version": "v1.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nette/schema.git",
+                "reference": "abbdbb70e0245d5f3bf77874cea1dfb0c930d06f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nette/schema/zipball/abbdbb70e0245d5f3bf77874cea1dfb0c930d06f",
+                "reference": "abbdbb70e0245d5f3bf77874cea1dfb0c930d06f",
+                "shasum": ""
+            },
+            "require": {
+                "nette/utils": "^2.5.7 || ^3.1.5 ||  ^4.0",
+                "php": ">=7.1 <8.3"
+            },
+            "require-dev": {
+                "nette/tester": "^2.3 || ^2.4",
+                "phpstan/phpstan-nette": "^1.0",
+                "tracy/tracy": "^2.7"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.2-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause",
+                "GPL-2.0-only",
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "David Grudl",
+                    "homepage": "https://davidgrudl.com"
+                },
+                {
+                    "name": "Nette Community",
+                    "homepage": "https://nette.org/contributors"
+                }
+            ],
+            "description": "📐 Nette Schema: validating data structures against a given Schema.",
+            "homepage": "https://nette.org",
+            "keywords": [
+                "config",
+                "nette"
+            ],
+            "support": {
+                "issues": "https://github.com/nette/schema/issues",
+                "source": "https://github.com/nette/schema/tree/v1.2.3"
+            },
+            "time": "2022-10-13T01:24:26+00:00"
+        },
+        {
+            "name": "nette/utils",
+            "version": "v4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nette/utils.git",
+                "reference": "cacdbf5a91a657ede665c541eda28941d4b09c1e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nette/utils/zipball/cacdbf5a91a657ede665c541eda28941d4b09c1e",
+                "reference": "cacdbf5a91a657ede665c541eda28941d4b09c1e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0 <8.3"
+            },
+            "conflict": {
+                "nette/finder": "<3",
+                "nette/schema": "<1.2.2"
+            },
+            "require-dev": {
+                "jetbrains/phpstorm-attributes": "dev-master",
+                "nette/tester": "^2.4",
+                "phpstan/phpstan": "^1.0",
+                "tracy/tracy": "^2.9"
+            },
+            "suggest": {
+                "ext-gd": "to use Image",
+                "ext-iconv": "to use Strings::webalize(), toAscii(), chr() and reverse()",
+                "ext-intl": "to use Strings::webalize(), toAscii(), normalize() and compare()",
+                "ext-json": "to use Nette\\Utils\\Json",
+                "ext-mbstring": "to use Strings::lower() etc...",
+                "ext-tokenizer": "to use Nette\\Utils\\Reflection::getUseStatements()",
+                "ext-xml": "to use Strings::length() etc. when mbstring is not available"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.0-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause",
+                "GPL-2.0-only",
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "David Grudl",
+                    "homepage": "https://davidgrudl.com"
+                },
+                {
+                    "name": "Nette Community",
+                    "homepage": "https://nette.org/contributors"
+                }
+            ],
+            "description": "🛠  Nette Utils: lightweight utilities for string & array manipulation, image handling, safe JSON encoding/decoding, validation, slug or strong password generating etc.",
+            "homepage": "https://nette.org",
+            "keywords": [
+                "array",
+                "core",
+                "datetime",
+                "images",
+                "json",
+                "nette",
+                "paginator",
+                "password",
+                "slugify",
+                "string",
+                "unicode",
+                "utf-8",
+                "utility",
+                "validation"
+            ],
+            "support": {
+                "issues": "https://github.com/nette/utils/issues",
+                "source": "https://github.com/nette/utils/tree/v4.0.0"
+            },
+            "time": "2023-02-02T10:41:53+00:00"
+        },
+        {
             "name": "paragonie/random_compat",
             "version": "v9.99.100",
             "source": {
@@ -1925,6 +2376,134 @@
                 "source": "https://github.com/paragonie/random_compat"
             },
             "time": "2020-10-15T08:29:30+00:00"
+        },
+        {
+            "name": "php-di/invoker",
+            "version": "2.3.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHP-DI/Invoker.git",
+                "reference": "cd6d9f267d1a3474bdddf1be1da079f01b942786"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHP-DI/Invoker/zipball/cd6d9f267d1a3474bdddf1be1da079f01b942786",
+                "reference": "cd6d9f267d1a3474bdddf1be1da079f01b942786",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.3",
+                "psr/container": "^1.0|^2.0"
+            },
+            "require-dev": {
+                "athletic/athletic": "~0.1.8",
+                "mnapoli/hard-mode": "~0.3.0",
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Invoker\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Generic and extensible callable invoker",
+            "homepage": "https://github.com/PHP-DI/Invoker",
+            "keywords": [
+                "callable",
+                "dependency",
+                "dependency-injection",
+                "injection",
+                "invoke",
+                "invoker"
+            ],
+            "support": {
+                "issues": "https://github.com/PHP-DI/Invoker/issues",
+                "source": "https://github.com/PHP-DI/Invoker/tree/2.3.3"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/mnapoli",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-12-13T09:22:56+00:00"
+        },
+        {
+            "name": "php-di/php-di",
+            "version": "7.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHP-DI/PHP-DI.git",
+                "reference": "5d1a8664e24f23b25e0426bbcb1288287fb49181"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/5d1a8664e24f23b25e0426bbcb1288287fb49181",
+                "reference": "5d1a8664e24f23b25e0426bbcb1288287fb49181",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/serializable-closure": "^1.0",
+                "php": ">=8.0",
+                "php-di/invoker": "^2.0",
+                "psr/container": "^1.1 || ^2.0"
+            },
+            "provide": {
+                "psr/container-implementation": "^1.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3",
+                "mnapoli/phpunit-easymock": "^1.3",
+                "ocramius/proxy-manager": "^2.11.2",
+                "phpunit/phpunit": "^9.5",
+                "vimeo/psalm": "^4.6"
+            },
+            "suggest": {
+                "ocramius/proxy-manager": "Install it if you want to use lazy injection (version ^2.3)"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "DI\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "The dependency injection container for humans",
+            "homepage": "https://php-di.org/",
+            "keywords": [
+                "PSR-11",
+                "container",
+                "container-interop",
+                "dependency injection",
+                "di",
+                "ioc",
+                "psr11"
+            ],
+            "support": {
+                "issues": "https://github.com/PHP-DI/PHP-DI/issues",
+                "source": "https://github.com/PHP-DI/PHP-DI/tree/7.0.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/mnapoli",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/php-di/php-di",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2023-02-07T17:34:03+00:00"
         },
         {
             "name": "psr/container",
@@ -2467,6 +3046,69 @@
                 }
             ],
             "time": "2023-03-01T10:25:55+00:00"
+        },
+        {
+            "name": "symfony/filesystem",
+            "version": "v6.2.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/filesystem.git",
+                "reference": "fd588debf7d1bc16a2c84b4b3b71145d9946b894"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/fd588debf7d1bc16a2c84b4b3b71145d9946b894",
+                "reference": "fd588debf7d1bc16a2c84b4b3b71145d9946b894",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/polyfill-ctype": "~1.8",
+                "symfony/polyfill-mbstring": "~1.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Filesystem\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides basic utilities for the filesystem",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/filesystem/tree/v6.2.10"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2023-04-18T13:46:08+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -3029,21 +3671,73 @@
                 }
             ],
             "time": "2023-03-20T16:06:02+00:00"
+        },
+        {
+            "name": "teapot/status-code",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/teapot-php/status-code.git",
+                "reference": "1acbf508c63063b63d5c29be6a13c900923f4d2c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/teapot-php/status-code/zipball/1acbf508c63063b63d5c29be6a13c900923f4d2c",
+                "reference": "1acbf508c63063b63d5c29be6a13c900923f4d2c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~8.0.0 || ~8.1.0 || ~8.2.0"
+            },
+            "require-dev": {
+                "ergebnis/php-cs-fixer-config": "^5.5.2",
+                "vimeo/psalm": "^5.11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Teapot\\StatusCode\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Barney Hanlon",
+                    "email": "barney@shrikeh.net"
+                },
+                {
+                    "name": "Andreas Möller",
+                    "email": "am@localheinz.com"
+                }
+            ],
+            "description": "PHP HTTP Response Status code library",
+            "homepage": "https://github.com/teapot-php/status-code",
+            "keywords": [
+                "http"
+            ],
+            "support": {
+                "issues": "https://github.com/teapot-php/status-code/issues",
+                "source": "https://github.com/teapot-php/status-code/tree/2.1.0"
+            },
+            "time": "2023-05-11T09:40:01+00:00"
         }
     ],
     "packages-dev": [
         {
             "name": "nikic/php-parser",
-            "version": "v4.15.4",
+            "version": "v4.15.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "6bb5176bc4af8bcb7d926f88718db9b96a2d4290"
+                "reference": "11e2663a5bc9db5d714eedb4277ee300403b4a9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/6bb5176bc4af8bcb7d926f88718db9b96a2d4290",
-                "reference": "6bb5176bc4af8bcb7d926f88718db9b96a2d4290",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/11e2663a5bc9db5d714eedb4277ee300403b4a9e",
+                "reference": "11e2663a5bc9db5d714eedb4277ee300403b4a9e",
                 "shasum": ""
             },
             "require": {
@@ -3084,22 +3778,22 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v4.15.4"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v4.15.5"
             },
-            "time": "2023-03-05T19:49:14+00:00"
+            "time": "2023-05-19T20:20:00+00:00"
         },
         {
             "name": "psy/psysh",
-            "version": "v0.11.17",
+            "version": "v0.11.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "3dc5d4018dabd80bceb8fe1e3191ba8460569f0a"
+                "reference": "4f00ee9e236fa6a48f4560d1300b9c961a70a7ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/3dc5d4018dabd80bceb8fe1e3191ba8460569f0a",
-                "reference": "3dc5d4018dabd80bceb8fe1e3191ba8460569f0a",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/4f00ee9e236fa6a48f4560d1300b9c961a70a7ec",
+                "reference": "4f00ee9e236fa6a48f4560d1300b9c961a70a7ec",
                 "shasum": ""
             },
             "require": {
@@ -3160,9 +3854,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bobthecow/psysh/issues",
-                "source": "https://github.com/bobthecow/psysh/tree/v0.11.17"
+                "source": "https://github.com/bobthecow/psysh/tree/v0.11.18"
             },
-            "time": "2023-05-05T20:02:42+00:00"
+            "time": "2023-05-23T02:31:11+00:00"
         },
         {
             "name": "symfony/var-dumper",
@@ -3256,7 +3950,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "kahu-app/oauth2-client": 20
+        "kahu/oauth2-client": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

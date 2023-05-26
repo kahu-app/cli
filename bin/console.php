@@ -12,78 +12,53 @@ chdir(dirname($argv[0]));
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Composer\InstalledVersions;
-use Kahu\Cli\Commands\AuthCommand;
-use Kahu\Cli\Commands\CheckCommand;
-use Kahu\Cli\Commands\ShowCommand;
-use Kahu\Cli\Commands\UpdateCommand;
+use DI\ContainerBuilder;
+use Kahu\Cli\Commands\Auth;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\CommandLoader\FactoryCommandLoader;
+use Symfony\Component\Console\CommandLoader\ContainerCommandLoader;
 
 define(
   '__VERSION__',
   sprintf(
     '%s@%s',
-    InstalledVersions::getPrettyVersion('kahu-app/cli') ?? 'unknown',
-    substr(InstalledVersions::getReference('kahu-app/cli') ?? 'unknown', 0, 7)
+    InstalledVersions::getPrettyVersion('kahu/cli') ?? 'unknown',
+    substr(InstalledVersions::getReference('kahu/cli') ?? 'unknown', 0, 7)
   )
 );
 
-define(
-  'AUTH_FILE',
-  sprintf(
-    '%s/.config/kahu/auth.json',
-    $_SERVER['HOME'] ?? $_ENV['HOME'] ?? '~'
-  )
-);
+define('__ROOT__', dirname(__DIR__));
 
-$accessToken = 'unauthenticated';
-if (file_exists(AUTH_FILE) === true) {
-  $json = json_decode(file_get_contents(AUTH_FILE), true, flags: JSON_THROW_ON_ERROR);
-
-  $accessToken = $json['access_token'] ?? 'unauthenticated';
+// default PHP_ENV to "prod"
+if (isset($_ENV['PHP_ENV']) === false) {
+  $_ENV['PHP_ENV'] = 'prod';
 }
 
-$client = new GuzzleHttp\Client(
-  [
-    'base_uri' => 'https://api.kahu.app/v1',
-    'allow_redirects' => [
-      'max' => 10,
-      'strict' => true,
-      'referer' => true,
-      'protocols' => ['https'],
-      'track_redirects' => true
-    ],
-    'headers' => [
-      'Accept' => 'application/json',
-      'Authorization' => "Bearer {$accessToken}",
-      'User-Agent' => sprintf(
-        'kahu-cli/%s (php/%s; %s)',
-        __VERSION__,
-        PHP_VERSION,
-        PHP_OS_FAMILY
-      )
-    ]
-  ]
-);
+// Instantiate PHP-DI ContainerBuilder
+$containerBuilder = new ContainerBuilder();
 
-$httpFactory = new GuzzleHttp\Psr7\HttpFactory();
+// if ($_ENV['PHP_ENV'] === 'prod') {
+//   $containerBuilder
+//     ->enableCompilation(Temporary::getDirectory() . '/cache')
+//     ->writeProxiesToFile(true, Temporary::getDirectory() . '/proxies');
+// }
+
+// Set up dependencies
+$dependencies = require_once dirname(__DIR__) . '/config/dependencies.php';
+$dependencies($containerBuilder);
+
+// Build PHP-DI Container instance
+$container = $containerBuilder->build();
 
 $app = new Application('kahu.app console', __VERSION__);
 $app->setCommandLoader(
-  new FactoryCommandLoader(
+  new ContainerCommandLoader(
+    $container,
     [
-      AuthCommand::getDefaultName() => static function (): AuthCommand {
-        return new AuthCommand();
-      },
-      CheckCommand::getDefaultName() => static function () use ($client, $httpFactory): CheckCommand {
-        return new CheckCommand($client, $httpFactory, $httpFactory);
-      },
-      ShowCommand::getDefaultName() => static function () use ($client, $httpFactory): ShowCommand {
-        return new ShowCommand($client, $httpFactory, $httpFactory);
-      },
-      UpdateCommand::getDefaultName() => static function (): UpdateCommand {
-        return new UpdateCommand();
-      }
+      Auth\LoginCommand::getDefaultName() => Auth\LoginCommand::class,
+      Auth\LogoutCommand::getDefaultName() => Auth\LogoutCommand::class,
+      Auth\RefreshCommand::getDefaultName() => Auth\RefreshCommand::class,
+      Auth\StatusCommand::getDefaultName() => Auth\StatusCommand::class,
+      Auth\TokenCommand::getDefaultName() => Auth\TokenCommand::class
     ]
   )
 );
