@@ -1,0 +1,121 @@
+name: Package Release
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+
+      - name: Setup PHP 8.2 with PHIVE
+        uses: shivammathur/setup-php@4bd44f22a98a19e0950cbad5f31095157cc9621b
+        with:
+          php-version: '8.2'
+          ini-values: phar.readonly=0
+          coverage: none
+          tools: phive, composer:v2
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@83af392bf5f031813d25e6fe4cd626cdba9a2df6
+
+      - name: Build PHAR
+        run: |
+          phive install humbug/box
+          box compile
+          sha512sum bin/kahu-cli.phar > bin/kahu-cli.phar.sha512
+
+      - name: Check that the PHAR works
+        run: bin/kahu-cli.phar --ansi --version
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: true
+          body: TODO
+
+      - name: Upload PHAR
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: bin/kahu-cli.phar
+          asset_name: kahu-cli.phar
+          asset_content_type: application/octet-stream
+
+      - name: Upload Checksum
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: bin/kahu-cli.phar.sha512
+          asset_name: kahu-cli.phar.sha512
+          asset_content_type: application/octet-stream
+
+      - name: Configure GPG Key and Sign PHAR
+        run: |
+          mkdir -p ~/.gnupg/
+          chmod 0700 ~/.gnupg/
+          echo "$GPG_SIGNING_KEY" > ~/.gnupg/private.key
+          gpg --import ~/.gnupg/private.key
+          gpg --local-user gpg@kahu.app --detach-sign --output bin/kahu-cli.phar.asc bin/kahu-cli.phar
+        env:
+          GPG_SIGNING_KEY: |
+            ${{ secrets.GPG_KEY_D581C2A9C8A4FE8F9E09FB1AA407297528720AEE }}
+
+      - name: Upload Signature
+        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: bin/kahu-cli.phar.sha512
+          asset_name: kahu-cli.phar.sha512
+          asset_content_type: application/octet-stream
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@16c0bc4a6e6ada2cfd8afd41d22d95379cf7c32a
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker Image (runtime-cli)
+        uses: docker/build-push-action@2eb1c1961a95fc15694676618e422e8ba1d63825
+        with:
+          file: ./docker/Dockerfile
+          push: true
+          build-args:
+            "VERSION=${{ github.ref_name }}"
+          tags: ghcr.io/kahu-app/cli:${{ github.ref_name }}
+          target: runtime-cli
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build Docker Image (standalone-cli)
+        uses: docker/build-push-action@2eb1c1961a95fc15694676618e422e8ba1d63825
+        with:
+          file: ./docker/Dockerfile
+          push: true
+          build-args:
+            "VERSION=${{ github.ref_name }}-standalone"
+          tags: ghcr.io/kahu-app/cli:${{ github.ref_name }}-standalone
+          target: standalone-cli
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
