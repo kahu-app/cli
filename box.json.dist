@@ -1,23 +1,32 @@
 {
   "algorithm": "SHA256",
   "compactors": [
-    "KevinGH\\Box\\Compactor\\Json"
+    "KevinGH\\Box\\Compactor\\Json",
+    "KevinGH\\Box\\Compactor\\Php",
+    "KevinGH\\Box\\Compactor\\PhpScoper"
   ],
-  "compression": "GZ",
   "directories": [
+    "config",
     "src"
   ],
   "finder": [
     {
+      "notName": "/LICENSE|.*\\.md|.*\\.dist|Makefile|composer\\.json|composer\\.lock/",
       "exclude": [
+        "doc",
         "test",
-        "tests"
+        "tests",
+        "Tests"
       ],
       "in": "vendor",
       "name": "*.php"
+    },
+    {
+      "name": "composer.json",
+      "in": "."
     }
   ],
   "force-autodiscovery": true,
   "main": "bin/console.php",
-  "output": "bin/kahu-app.phar"
+  "output": "bin/kahu-cli.phar"
 }

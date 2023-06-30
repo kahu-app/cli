@@ -8,5 +8,5 @@ composer.phar
 /logs/*
 !/logs/.gitkeep
 .phpunit.result.cache
-/bin/kahu-cli
+/bin/kahu-cli.phar
 box.json

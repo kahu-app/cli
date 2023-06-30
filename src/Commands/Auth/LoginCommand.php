@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Kahu\Cli\Commands\Auth;
 
+use Amp\Dns\DnsRecord;
 use Amp\Http\HttpStatus;
 use Amp\Http\Server\DefaultErrorHandler;
 use Amp\Http\Server\Driver\SocketClientFactory;
@@ -11,15 +12,16 @@ use Amp\Http\Server\RequestHandler;
 use Amp\Http\Server\Response;
 use Amp\Http\Server\SocketHttpServer;
 use Amp\Socket;
+use Exception;
 use Jay\Json;
+use Kahu\OAuth2\Client\Provider\Kahu;
 use League\Config\ConfigurationInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Log\AbstractLogger;
 use Psr\Log\NullLogger;
-
-use Kahu\OAuth2\Client\Provider\Kahu;
 use RuntimeException;
+use Scale\Time\Days;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -35,7 +37,7 @@ final class LoginCommand extends Command {
   private function openBrowser(string $url): void {
     $command = match (strtolower(PHP_OS_FAMILY)) {
       'bsd', 'linux' => 'xdg-open',
-      'dawrin' => 'open',
+      'darwin' => 'open',
       default => 'start'
     };
 
@@ -51,6 +53,12 @@ final class LoginCommand extends Command {
   protected function configure(): void {
     $this
       ->addOption(
+        'with-token',
+        't',
+        InputOption::VALUE_REQUIRED,
+        'Login using an access token instead of going through web authentication'
+      )
+      ->addOption(
         'force',
         'f',
         InputOption::VALUE_NONE,
@@ -59,7 +67,9 @@ final class LoginCommand extends Command {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output): int {
+    $withToken = $input->getOption('with-token');
     $force = (bool)$input->getOption('force');
+
     if (
       $force === false &&
       $this->accessToken->getToken() !== 'unauthenticated' &&
@@ -76,120 +86,163 @@ final class LoginCommand extends Command {
       return Command::SUCCESS;
     }
 
-    $logger = new NullLogger();
-    if ($output->isDebug()) {
-      $logger = new class($output) extends AbstractLogger {
-        private OutputInterface $output;
+    if ($withToken !== null && $withToken !== '') {
+      $authFile = $this->config->get('authFile');
+      if (is_string($authFile) === false) {
+        throw new RuntimeException('Invalid authentication file path');
+      }
 
-        public function __construct(OutputInterface $output) {
-          $this->output = $output;
-        }
+      $path = dirname($authFile);
+      if (is_dir($path) === false && mkdir($path, recursive: true) === false) {
+        throw new RuntimeException('Failed to create configuration directory');
+      }
 
-        public function log($level, string|\Stringable $message, array $context = []): void {
-          $this->output->writeln($message);
-        }
-      };
+      $accessToken = new AccessToken(
+        [
+          'access_token' => $withToken,
+          'expires_in' => 30 * Days::IN_SECONDS
+        ]
+      );
+      file_put_contents(
+        $authFile,
+        json_encode($accessToken, JSON_THROW_ON_ERROR),
+        LOCK_EX
+      );
     }
 
-    $server = new SocketHttpServer(
-      $logger,
-      new Socket\ResourceServerSocketFactory(),
-      new SocketClientFactory($logger)
-    );
+    if ($withToken === null) {
+      try {
+        $records = \Amp\Dns\resolve('localhost', DnsRecord::A);
+      } catch (Exception) {
+        $output->writeln(
+          [
+            '',
+            'Failed to resolve "localhost"',
+            ''
+          ]
+        );
 
-    $records = \Amp\Dns\resolve('localhost', \Amp\Dns\DnsRecord::A);
+        return Command::FAILURE;
+      }
 
-    $server->expose(sprintf('%s:0', $records[0]->getValue()));
-    $server->start(
-      new class($this->kahu, $this->config) implements RequestHandler {
-        private Kahu $kahu;
-        private ConfigurationInterface $config;
+      $logger = new NullLogger();
+      if ($output->isDebug()) {
+        $logger = new class($output) extends AbstractLogger {
+          private OutputInterface $output;
 
-        public function __construct(Kahu $kahu, ConfigurationInterface $config) {
-          $this->kahu = $kahu;
-          $this->config = $config;
-        }
-
-        public function handleRequest(Request $request): Response {
-          if ($request->hasQueryParameter('code') === false) {
-            return new Response(HttpStatus::BAD_REQUEST);
+          public function __construct(OutputInterface $output) {
+            $this->output = $output;
           }
 
-          if (
-            $request->hasQueryParameter('state') === false ||
-            $request->getQueryParameter('state') !== $this->kahu->getState()
-          ) {
-            return new Response(HttpStatus::BAD_REQUEST);
+          public function log($level, string|\Stringable $message, array $context = []): void {
+            $this->output->writeln($message);
+          }
+        };
+      }
+
+      $server = new SocketHttpServer(
+        $logger,
+        new Socket\ResourceServerSocketFactory(),
+        new SocketClientFactory($logger)
+      );
+      $server->expose(sprintf('%s:0', $records[0]->getValue()));
+      $server->start(
+        new class($this->kahu, $this->config) implements RequestHandler {
+          private Kahu $kahu;
+          private ConfigurationInterface $config;
+
+          public function __construct(Kahu $kahu, ConfigurationInterface $config) {
+            $this->kahu = $kahu;
+            $this->config = $config;
           }
 
-          $accessToken = $this->kahu->getAccessToken(
-            'authorization_code',
-            [
-              'code' => $request->getQueryParameter('code')
-            ]
-          );
+          public function handleRequest(Request $request): Response {
+            if ($request->hasQueryParameter('code') === false) {
+              return new Response(HttpStatus::BAD_REQUEST);
+            }
 
-          $authFile = $this->config->get('authFile');
-          $path = dirname($authFile);
-          if (is_dir($path) === false && mkdir($path, recursive: true) === false) {
-            throw new RuntimeException('Failed to create configuration directory');
+            if (
+              $request->hasQueryParameter('state') === false ||
+              $request->getQueryParameter('state') !== $this->kahu->getState()
+            ) {
+              return new Response(HttpStatus::BAD_REQUEST);
+            }
+
+            $accessToken = $this->kahu->getAccessToken(
+              'authorization_code',
+              [
+                'code' => $request->getQueryParameter('code')
+              ]
+            );
+
+            $authFile = $this->config->get('authFile');
+            if (is_string($authFile) === false) {
+              throw new RuntimeException('Invalid authentication file path');
+            }
+
+            $path = dirname($authFile);
+            if (is_dir($path) === false && mkdir($path, recursive: true) === false) {
+              throw new RuntimeException('Failed to create configuration directory');
+            }
+
+            file_put_contents(
+              $authFile,
+              json_encode($accessToken, JSON_THROW_ON_ERROR),
+              LOCK_EX
+            );
+
+            posix_kill(getmypid(), SIGINT);
+
+            return new Response(
+              HttpStatus::FOUND,
+              [
+                'location' => 'https://sso.kahu.app/authorization/success'
+              ]
+            );
           }
+        },
+        new DefaultErrorHandler()
+      );
 
-          file_put_contents(
-            $authFile,
-            json_encode($accessToken, JSON_THROW_ON_ERROR),
-            LOCK_EX
-          );
+      $servers = $server->getServers();
+      $localhost = $servers[0]->getAddress();
+      $localAddress = $localhost->getAddress();
+      $localPort = $localhost->getPort();
 
-          posix_kill(getmypid(), SIGINT);
+      $this->kahu->setRedirectUri("http://{$localAddress}:{$localPort}/callback");
+      $authUrl = $this->kahu->getAuthorizationUrl();
 
-          return new Response(
-            HttpStatus::FOUND,
-            [
-              'location' => 'https://sso.kahu.app/authorization/success'
-            ]
-          );
-        }
-      },
-      new DefaultErrorHandler()
-    );
+      $output->writeln(
+        [
+          '',
+          'Opening browser..',
+          $authUrl,
+          ''
+        ]
+      );
 
-    $servers = $server->getServers();
-    $localhost = $servers[0]->getAddress();
-    $localAddress = $localhost->getAddress();
-    $localPort = $localhost->getPort();
+      $this->openBrowser($authUrl);
 
-    $this->kahu->setRedirectUri("http://{$localAddress}:{$localPort}/callback");
-    $authUrl = $this->kahu->getAuthorizationUrl();
-
-    $output->writeln(
-      [
-        '',
-        'Opening browser..',
-        $authUrl,
-        ''
-      ]
-    );
-
-    $this->openBrowser($authUrl);
-
-    $signal = \Amp\trapSignal([\SIGHUP, \SIGINT, \SIGQUIT, \SIGTERM]);
-    $server->stop();
+      $signal = \Amp\trapSignal([\SIGHUP, \SIGINT, \SIGQUIT, \SIGTERM]);
+      $server->stop();
+    }
 
     $authFile = $this->config->get('authFile');
-    $json = Json::fromFile($authFile, true);
+    if (file_exists($authFile) === true) {
+      $json = Json::fromFile($authFile, true);
 
-    $accessToken = new AccessToken($json);
+      $accessToken = new AccessToken($json);
 
-    $profile = $this->kahu->getResourceOwner($accessToken);
+      $profile = $this->kahu->getResourceOwner($accessToken);
 
-    $output->writeln(
-      [
-        '',
-        'Authenticated as <options=bold>' . $profile->getName() . '</>.',
-        ''
-      ]
-    );
+      $output->writeln(
+        [
+          '',
+          'Authenticated as <options=bold>' . $profile->getName() . '</>.',
+          ''
+        ]
+      );
+    }
 
     return Command::SUCCESS;
   }

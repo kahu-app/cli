@@ -13,6 +13,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Symfony\Component\Filesystem\Path;
 
 return static function (ContainerBuilder $builder): void {
   $builder->addDefinitions(
@@ -30,7 +31,7 @@ return static function (ContainerBuilder $builder): void {
            [
             'authFile' => sprintf(
               '%s/.config/kahu/auth.json',
-              $_SERVER['HOME'] ?? $_ENV['HOME'] ?? '~'
+              Path::getHomeDirectory()
             )
           ]
         );
@@ -41,6 +42,10 @@ return static function (ContainerBuilder $builder): void {
         $config = $container->get(ConfigurationInterface::class);
 
         $authFile = $config->get('authFile');
+        if (is_string($authFile) === false) {
+          throw new RuntimeException('Invalid authentication file path');
+        }
+
         if (
           file_exists($authFile) === false ||
           is_readable($authFile) === false

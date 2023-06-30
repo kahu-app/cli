@@ -15,6 +15,18 @@ final class TokenCommand extends Command {
   private AccessTokenInterface $accessToken;
 
   protected function execute(InputInterface $input, OutputInterface $output): int {
+    if ($this->accessToken->getToken() === 'unauthenticated') {
+      $output->writeln(
+        [
+          '',
+          'You are currently not authenticated',
+          ''
+        ]
+      );
+
+      return Command::SUCCESS;
+    }
+
     $output->writeln(
       [
         '',

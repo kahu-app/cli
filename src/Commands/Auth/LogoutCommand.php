@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Kahu\Cli\Commands\Auth;
 
 use League\Config\ConfigurationInterface;
+use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,6 +16,10 @@ final class LogoutCommand extends Command {
 
   protected function execute(InputInterface $input, OutputInterface $output): int {
     $authFile = $this->config->get('authFile');
+    if (is_string($authFile) === false) {
+      throw new RuntimeException('Invalid authentication file path');
+    }
+
     if (file_exists($authFile) === false) {
       $output->writeln(
         [

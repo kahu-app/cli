@@ -9,11 +9,12 @@ error_reporting(E_ALL);
 // ensure correct absolute path
 chdir(dirname($argv[0]));
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 use Composer\InstalledVersions;
 use DI\ContainerBuilder;
 use Kahu\Cli\Commands\Auth;
+use Kahu\Cli\Commands\Manifest;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\CommandLoader\ContainerCommandLoader;
 
@@ -36,12 +37,6 @@ if (isset($_ENV['PHP_ENV']) === false) {
 // Instantiate PHP-DI ContainerBuilder
 $containerBuilder = new ContainerBuilder();
 
-// if ($_ENV['PHP_ENV'] === 'prod') {
-//   $containerBuilder
-//     ->enableCompilation(Temporary::getDirectory() . '/cache')
-//     ->writeProxiesToFile(true, Temporary::getDirectory() . '/proxies');
-// }
-
 // Set up dependencies
 $dependencies = require_once dirname(__DIR__) . '/config/dependencies.php';
 $dependencies($containerBuilder);
@@ -58,7 +53,10 @@ $app->setCommandLoader(
       Auth\LogoutCommand::getDefaultName() => Auth\LogoutCommand::class,
       Auth\RefreshCommand::getDefaultName() => Auth\RefreshCommand::class,
       Auth\StatusCommand::getDefaultName() => Auth\StatusCommand::class,
-      Auth\TokenCommand::getDefaultName() => Auth\TokenCommand::class
+      Auth\TokenCommand::getDefaultName() => Auth\TokenCommand::class,
+      Manifest\ReportCommand::getDefaultName() => Manifest\ReportCommand::class,
+      Manifest\UploadCommand::getDefaultName() => Manifest\UploadCommand::class,
+      Manifest\ValidateCommand::getDefaultName() => Manifest\ValidateCommand::class
     ]
   )
 );

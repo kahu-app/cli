@@ -13,8 +13,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand('auth:status', 'View authentication status')]
 final class StatusCommand extends Command {
-  private Kahu $kahu;
   private AccessTokenInterface $accessToken;
+  private Kahu $kahu;
 
   protected function execute(InputInterface $input, OutputInterface $output): int {
     if ($this->accessToken->getToken() === 'unauthenticated') {

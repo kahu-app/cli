@@ -66,6 +66,10 @@ final class RefreshCommand extends Command {
       );
 
       $authFile = $this->config->get('authFile');
+      if (is_string($authFile) === false) {
+        throw new RuntimeException('Invalid authentication file path');
+      }
+
       $path = dirname($authFile);
       if (is_dir($path) === false && mkdir($path, recursive: true) === false) {
         throw new RuntimeException('Failed to create configuration directory');
