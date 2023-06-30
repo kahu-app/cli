@@ -5,10 +5,10 @@ on:
       - '*'
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
     steps:
       - name: Checkout source
@@ -27,64 +27,39 @@ jobs:
 
       - name: Build PHAR
         run: |
-          phive install humbug/box
-          box compile
+          phive --no-progress install --trust-gpg-keys 2DF45277AEF09A2F humbug/box
+          phive status
+          ./tools/box compile
           sha512sum bin/kahu-cli.phar > bin/kahu-cli.phar.sha512
 
       - name: Check that the PHAR works
         run: bin/kahu-cli.phar --ansi --version
 
+      - name: Import GPG Key
+        uses: crazy-max/ghaction-import-gpg@72b6676b71ab476b77e676928516f6982eef7a41
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Sign PHAR
+        run: >
+          gpg
+          --local-user gpg@kahu.app
+          --passphrase ${{ secrets.GPG_PASSPHRASE }}
+          --detach-sign
+          --output bin/kahu-cli.phar.asc
+          bin/kahu-cli.phar
+
       - name: Create release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
           draft: true
           body: TODO
-
-      - name: Upload PHAR
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: bin/kahu-cli.phar
-          asset_name: kahu-cli.phar
-          asset_content_type: application/octet-stream
-
-      - name: Upload Checksum
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: bin/kahu-cli.phar.sha512
-          asset_name: kahu-cli.phar.sha512
-          asset_content_type: application/octet-stream
-
-      - name: Configure GPG Key and Sign PHAR
-        run: |
-          mkdir -p ~/.gnupg/
-          chmod 0700 ~/.gnupg/
-          echo "$GPG_SIGNING_KEY" > ~/.gnupg/private.key
-          gpg --import ~/.gnupg/private.key
-          gpg --local-user gpg@kahu.app --detach-sign --output bin/kahu-cli.phar.asc bin/kahu-cli.phar
-        env:
-          GPG_SIGNING_KEY: |
-            ${{ secrets.GPG_KEY_D581C2A9C8A4FE8F9E09FB1AA407297528720AEE }}
-
-      - name: Upload Signature
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: bin/kahu-cli.phar.sha512
-          asset_name: kahu-cli.phar.sha512
-          asset_content_type: application/octet-stream
+          files: |
+            bin/kahu-cli.phar
+            bin/kahu-cli.phar.sha512
+            bin/kahu-cli.phar.asc
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@16c0bc4a6e6ada2cfd8afd41d22d95379cf7c32a
@@ -99,6 +74,7 @@ jobs:
       - name: Build Docker Image (runtime-cli)
         uses: docker/build-push-action@2eb1c1961a95fc15694676618e422e8ba1d63825
         with:
+          context: .
           file: ./docker/Dockerfile
           push: true
           build-args:
@@ -111,6 +87,7 @@ jobs:
       - name: Build Docker Image (standalone-cli)
         uses: docker/build-push-action@2eb1c1961a95fc15694676618e422e8ba1d63825
         with:
+          context: .
           file: ./docker/Dockerfile
           push: true
           build-args:
