@@ -1,0 +1,12 @@
+composer.phar
+.env
+.idea/
+.vscode/
+/coverage/
+/run/
+/vendor/
+/logs/*
+!/logs/.gitkeep
+.phpunit.result.cache
+/bin/kahu-cli
+box.json
