@@ -79,7 +79,9 @@ jobs:
           push: true
           build-args:
             "VERSION=${{ github.ref_name }}"
-          tags: ghcr.io/kahu-app/cli:${{ github.ref_name }}
+          tags: |
+            ghcr.io/kahu-app/cli:${{ github.ref_name }}
+            ghcr.io/kahu-app/cli:latest
           target: runtime-cli
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -92,7 +94,9 @@ jobs:
           push: true
           build-args:
             "VERSION=${{ github.ref_name }}-standalone"
-          tags: ghcr.io/kahu-app/cli:${{ github.ref_name }}-standalone
+          tags: |
+            ghcr.io/kahu-app/cli:${{ github.ref_name }}-standalone
+            ghcr.io/kahu-app/cli:latest-standalone
           target: standalone-cli
           cache-from: type=gha
           cache-to: type=gha,mode=max
