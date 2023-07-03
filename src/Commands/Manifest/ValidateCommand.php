@@ -70,7 +70,7 @@ final class ValidateCommand extends Command {
     $filePath = $input->getOption('file');
     $fileRules = [];
     if ($filePath !== null) {
-      $filePath = Path::makeAbsolute($filePath, __ROOT__);
+      $filePath = Path::makeAbsolute($filePath, getcwd());
       if (is_file($filePath) === false) {
         $output->writeln(
           sprintf(

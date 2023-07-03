@@ -6,9 +6,6 @@ date_default_timezone_set('UTC');
 setlocale(LC_ALL, 'en_US.UTF8');
 error_reporting(E_ALL);
 
-// ensure correct absolute path
-chdir(dirname($argv[0]));
-
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 use Composer\InstalledVersions;
@@ -26,8 +23,6 @@ define(
     substr(InstalledVersions::getReference('kahu/cli') ?? 'unknown', 0, 7)
   )
 );
-
-define('__ROOT__', dirname(__DIR__));
 
 // default PHP_ENV to "prod"
 if (isset($_ENV['PHP_ENV']) === false) {

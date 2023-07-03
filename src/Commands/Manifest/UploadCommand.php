@@ -47,7 +47,7 @@ final class UploadCommand extends Command {
     $json = (bool)$input->getOption('json');
     $idOnly = (bool)$input->getOption('id-only');
     $manifest = $input->getArgument('manifest');
-    $manifest = Path::makeAbsolute($manifest, __ROOT__);
+    $manifest = Path::makeAbsolute($manifest, getcwd());
     if (is_file($manifest) === false) {
       $output->writeln("File \"{$manifest}\" could not be found");
 
