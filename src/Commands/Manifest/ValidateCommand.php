@@ -7,7 +7,9 @@ use InvalidArgumentException;
 use Jay\Json;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use STS\Backoff\Backoff;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,12 +20,14 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\ExpressionLanguage\SyntaxError;
 use Symfony\Component\Filesystem\Path;
 use Teapot\StatusCode\Http;
+use Throwable;
 
 #[AsCommand('manifest:validate', 'Validate the analysis report using expression-based rules')]
 final class ValidateCommand extends Command {
   private ClientInterface $client;
   private RequestFactoryInterface $requestFactory;
   private StreamFactoryInterface $streamFactory;
+  private Backoff $backoff;
 
   protected function configure(): void {
     $this
@@ -44,6 +48,13 @@ final class ValidateCommand extends Command {
         'r',
         InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
         'Rule expression to be evaluated and process report contents'
+      )
+      ->addOption(
+        'retry',
+        null,
+        InputOption::VALUE_REQUIRED,
+        'Number of times to attempt retrieving report data before giving up',
+        3
       )
       ->addArgument(
         'reportId',
@@ -185,6 +196,15 @@ final class ValidateCommand extends Command {
       return Command::FAILURE;
     }
 
+    $retry = (int)$input->getOption('retry');
+    if ($retry < 0) {
+      $output->writeln('Retry must be a positive integer');
+
+      return Command::FAILURE;
+    }
+
+    $this->backoff->setMaxAttempts($retry);
+
     $variables = [];
     // async it!
     foreach ($endpoints as $endpoint) {
@@ -200,7 +220,49 @@ final class ValidateCommand extends Command {
         'GET',
         "https://api.kahu.app/v0/reports/{$reportId}/{$endpoint}"
       );
-      $response = $this->client->sendRequest($request);
+
+      $response = $this->backoff
+        ->setDecider(
+          static function (
+            int $attempt,
+            int $maxAttempts,
+            ResponseInterface $response = null,
+            Throwable $exception = null
+          ): bool {
+            if (
+              $attempt >= $maxAttempts ||
+              $response->getStatusCode() === Http::OK ||
+              $response->getStatusCode() >= Http::NOT_FOUND
+            ) {
+              return false;
+            }
+
+            return true;
+          }
+        )
+        ->setErrorHandler(
+          static function (
+            ?Throwable $exception,
+            int $attempt,
+            int $maxAttempts
+          ) use ($output, $endpoint): void {
+            $output->writeln(
+              sprintf(
+                'Retrieving data from api.kahu.app: %s (attempt %d of %d)',
+                $endpoint,
+                $attempt + 1,
+                $maxAttempts
+              ),
+              OutputInterface::OUTPUT_NORMAL | OutputInterface::VERBOSITY_DEBUG
+            );
+          }
+        )
+        ->run(
+          function () use ($request): ResponseInterface {
+            return $this->client->sendRequest($request);
+          }
+        );
+
       if ($response->getStatusCode() !== Http::OK) {
         $output->writeln(
           sprintf(
@@ -251,13 +313,15 @@ final class ValidateCommand extends Command {
   public function __construct(
     ClientInterface $client,
     RequestFactoryInterface $requestFactory,
-    StreamFactoryInterface $streamFactory
+    StreamFactoryInterface $streamFactory,
+    Backoff $backoff
   ) {
     parent::__construct();
 
     $this->client = $client;
     $this->requestFactory = $requestFactory;
     $this->streamFactory = $streamFactory;
+    $this->backoff = $backoff;
   }
 }
 

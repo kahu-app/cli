@@ -13,11 +13,16 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use STS\Backoff\Backoff;
+use STS\Backoff\Strategies\ExponentialStrategy;
 use Symfony\Component\Filesystem\Path;
 
 return static function (ContainerBuilder $builder): void {
   $builder->addDefinitions(
     [
+      Backoff::class => static function (ContainerInterface $container): Backoff {
+        return new Backoff(10, new ExponentialStrategy(750), 10000, true);
+      },
       ConfigurationInterface::class => static function (ContainerInterface $container): ConfigurationInterface {
         // config schema
         $config = new Configuration(
