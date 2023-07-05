@@ -134,6 +134,12 @@ final class ValidateCommand extends Command {
 
     $expressionLanguage = new ExpressionLanguage();
     if ((bool)$input->getOption('lint') === true) {
+      if (count($rules) === 0) {
+        $output->writeln('No rules available to be linted');
+
+        return Command::FAILURE;
+      }
+
       try {
         foreach ($rules as $rule) {
           $output->write(
@@ -171,6 +177,12 @@ final class ValidateCommand extends Command {
       $output->writeln('No errors were found.');
 
       return Command::SUCCESS;
+    }
+
+    if (count($rules) === 0) {
+      $output->writeln('No rules available to be evaluated');
+
+      return Command::FAILURE;
     }
 
     $variables = [];
