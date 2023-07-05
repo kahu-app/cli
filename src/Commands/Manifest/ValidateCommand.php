@@ -204,8 +204,9 @@ final class ValidateCommand extends Command {
       if ($response->getStatusCode() !== Http::OK) {
         $output->writeln(
           sprintf(
-            'Failed to retrieve "%s" from api.kahu.app',
-            $endpoint
+            'Failed to retrieve "%s" from api.kahu.app (response code: %d)',
+            $endpoint,
+            $response->getStatusCode()
           )
         );
 
