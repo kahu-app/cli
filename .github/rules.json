@@ -1,0 +1,14 @@
+[
+  {
+    "exp": "'eval' not in details['risky']",
+    "msg": "*eval* usage not allowed"
+  },
+  {
+    "exp": "'exec' not in details['risky']",
+    "msg": "*exec* usage not allowed"
+  },
+  {
+    "exp": "summary['advisories'] == 0",
+    "msg": "one or more dependencies with security advisories"
+  }
+]
