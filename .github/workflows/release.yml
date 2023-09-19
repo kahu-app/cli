@@ -31,6 +31,8 @@ jobs:
           phive status
           ./tools/box compile
           sha512sum bin/kahu-cli.phar > bin/kahu-cli.phar.sha512
+        env:
+          GITHUB_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check that the PHAR works
         run: bin/kahu-cli.phar --ansi --version
